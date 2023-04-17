@@ -57,16 +57,19 @@ public:
             } else if (freq < node.freq) {
                 cur = &node.right;
             } else {
-                freq += node.freq;
-                ch += node.ch;
                 cur = &node.right;
             }
         }
         *cur = new symbol(ch, freq);
+     
+
     }
     void print() {
         print_node(root);
       
+    }
+    void create() {
+        create_tree(root);
     }
 
 private:
@@ -89,7 +92,19 @@ private:
             print_node(curr->right);
         }
     
-    };
+    }
+
+    void create_tree(symbol* curr) {
+        for (symbol* temp = curr; temp; temp = temp->right) {
+            if (temp->left)
+                std::cout << temp->left->ch << " " << temp->left->freq << "\t";
+            std::cout << temp->ch << " " << temp->freq << "\t";
+            
+
+        }
+       
+
+    }
 };
 
 int main()
@@ -126,7 +141,8 @@ int main()
         freq = 0;
          
     }
-    Tree.print();
+    Tree.create();
+    //Tree.print();
    /* symbol temp;
     for (size_t i = 1; i < b_count; i++){
         for (size_t j = 0; j < b_count-i; j++)
