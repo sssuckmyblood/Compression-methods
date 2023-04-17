@@ -4,7 +4,7 @@
 class symbol {
 
 public:
-    char ch;
+    std::string ch;
     size_t freq;
     symbol* left;
     symbol* right;
@@ -12,14 +12,14 @@ public:
  
 
     symbol() {
-        ch = NULL;
+        ch = "";
         freq = 0;
         left = nullptr;
         right = nullptr;
         
 
     }
-    symbol(char character, int fr) {
+    symbol(std::string character, int fr) {
         ch = character;
         freq = fr;
         left = nullptr;
@@ -48,18 +48,18 @@ public:
         DestroyNode(root);
     }
 
-    void insert(char ch, int freq) {
+    void insert(std::string ch, int freq) {
         symbol** cur = &root;
         while (*cur) {
             symbol& node = **cur;
             if (freq > node.freq) {
                 cur = &node.left;
-            }
-            else if (freq < node.freq) {
+            } else if (freq < node.freq) {
                 cur = &node.right;
-            }
-            else {
-                return;
+            } else {
+                freq += node.freq;
+                ch += node.ch;
+                cur = &node.right;
             }
         }
         *cur = new symbol(ch, freq);
@@ -84,8 +84,8 @@ private:
     void print_node(symbol* curr) {
         if (curr) // Проверка на ненулевой указатель
         {
-            print_node(curr->left);
             std::cout << curr->ch << " " << curr->freq << std::endl;
+            print_node(curr->left);
             print_node(curr->right);
         }
     
@@ -95,7 +95,7 @@ private:
 int main()
 {
     setlocale(LC_ALL, "RUS");
-    std::string text = "абэракадабэра";
+    std::string text = "абракадабра";
     int text_len = text.length();
 
     size_t b_count = 0;
@@ -113,13 +113,13 @@ int main()
     }
     HaffmanTree Tree;
     int freq = 0;
-    char ch;
+    std::string ch;
     for (size_t i = 0; i < b_count; i++){
         ch = text[unic_index[i]];
         for (size_t j = 0; j < text_len; j++)
         {
             
-            if (ch == text[j])
+            if (ch[0] == text[j])
                 freq++;
         }
         Tree.insert(ch, freq);
