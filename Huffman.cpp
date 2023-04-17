@@ -1,58 +1,77 @@
 #include <iostream>
 #include <string>
 
-class symbol
-{
+class symbol {
+
 public:
-    char ch = NULL;
-    size_t freq = 0;
+    char ch;
+    size_t freq;
 
+    symbol() {
+        ch = NULL;
+        freq = 0;
+    }
+    symbol(const symbol &symbols) {
+        this->ch = symbols.ch;
+        this->freq = symbols.freq;
+    }
 
+    symbol operator=(symbol &symbols) {
+        this->ch = symbols.ch;
+        this->freq = symbols.freq;
+        return *this;
+    }
 };
 
 int main()
 {
     setlocale(LC_ALL, "RUS");
-    std::string text = "абракадабра";
+    std::string text = "абэракадабэра";
+    int text_len = text.length();
 
-    std::string bukvs = "";
     size_t b_count = 0;
 
     char sym[] = { ' ', 'а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т',
-                   'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я' };
-
-    for (size_t i = 0; i < 34; i++)
-    {
-        if (text.find(sym[i]) != std::string::npos)
+                   'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я'};
+    symbol* symbols;
+    int* unic_index = new int[text_len];
+    for (size_t i = 0, j = 0; i < 34 && j < text_len; i++){
+        if (text.find(sym[i]) != std::string::npos) {
             b_count++;
+            unic_index[j] = text.find(sym[i]);
+            j++;
+        }
+
     }
+    symbols = new symbol[b_count];
 
-    std::cout << b_count << "\n";
-
-    symbol* objects = new symbol[b_count];
-
-    for (size_t i = 0; i < text.length(); i++)
-    {
-        bool flag = 1;
-        for (size_t j = 0; j < b_count; j++)
+    
+    for (size_t i = 0; i < b_count; i++){
+        symbols[i].ch = text[unic_index[i]];
+        for (size_t j = 0; j < text_len; j++)
         {
-
-            if (objects[i].ch == objects[j].ch)
-            {
-                flag = 0;
-                break;
+            
+            if (symbols[i].ch == text[j])
+                symbols[i].freq++;
+        }
+        
+    }
+    symbol temp;
+    for (size_t i = 1; i < b_count; i++){
+        for (size_t j = 0; j < b_count-i; j++)
+        {
+            if (symbols[j].freq < symbols[j + 1].freq) {
+                temp = symbols[j];
+                symbols[j] = symbols[j + 1];
+                symbols[j + 1] = temp;
             }
         }
+            
 
-        if (flag == 0)
-            break;
-
-        objects[i].ch = text[i];
-        for (size_t j = 0; j < text.length(); j++)
-        {
-            if (text[j] == objects[i].ch)
-                objects[i].freq++;
-        }
-        std::cout << objects[i].freq << "\n";
     }
+    for (size_t i = 0; i < b_count; i++) {
+        std::cout << symbols[i].ch << "\t" << symbols[i].freq << "\n";
+
+    }
+  
 }
